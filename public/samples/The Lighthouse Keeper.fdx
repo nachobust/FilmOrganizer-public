@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<FinalDraft DocumentType="Script" Template="No" Version="5">
+<Content>
+<Paragraph Number="1" Type="Scene Heading"><SceneProperties Length="5/8" Page="1" Title=""><Summary><Paragraph><Text>Marta climbs to the lighthouse at dawn with her dog.</Text></Paragraph></Summary></SceneProperties><Text>EXT. CLIFFTOP LIGHTHOUSE - DAWN</Text></Paragraph>
+<Paragraph Type="Action"><Text>Wind tears across the grass. Waves explode against the rocks below. The old LIGHTHOUSE stands white against a bruised sky.</Text></Paragraph>
+<Paragraph Type="Action"><Text>MARTA (60s), weathered, in a yellow oilskin coat, climbs the path carrying a tin lunchbox and a coil of rope. Her sheepdog, BISCUIT, runs ahead.</Text></Paragraph>
+<Paragraph Type="Character"><Text>MARTA</Text></Paragraph>
+<Paragraph Type="Dialogue"><Text>Slow down. The sea is not going anywhere.</Text></Paragraph>
+<Paragraph Number="2" Type="Scene Heading"><Text>INT. LIGHTHOUSE - LAMP ROOM - DAY</Text></Paragraph>
+<Paragraph Type="Action"><Text>Marta polishes the giant Fresnel lens with a soft cloth. Brass instruments tick on the wall. A logbook lies open beside a thermos of coffee.</Text></Paragraph>
+<Paragraph Type="Action"><Text>The radio crackles.</Text></Paragraph>
+<Paragraph Type="Character"><Text>RADIO VOICE (V.O.)</Text></Paragraph>
+<Paragraph Type="Dialogue"><Text>Station twelve, this is harbour control. Storm warning upgraded. Do you copy?</Text></Paragraph>
+<Paragraph Type="Character"><Text>MARTA</Text></Paragraph>
+<Paragraph Type="Parenthetical"><Text>(into handset)</Text></Paragraph>
+<Paragraph Type="Dialogue"><Text>I copy. The light will be on.</Text></Paragraph>
+<Paragraph Number="3" Type="Scene Heading"><Text>EXT. HARBOUR VILLAGE - MAIN STREET - DAY</Text></Paragraph>
+<Paragraph Type="Action"><Text>Rain begins. FISHERMEN haul crates of fish off a battered pickup truck. Shop shutters slam.</Text></Paragraph>
+<Paragraph Type="Action"><Text>TOMÁS (17), soaked, sprints past on a bicycle, a waterproof bag strapped to his back.</Text></Paragraph>
+<Paragraph Type="Character"><Text>OLD FISHERMAN</Text></Paragraph>
+<Paragraph Type="Dialogue"><Text>Tomás! Where are you going in this?</Text></Paragraph>
+<Paragraph Type="Character"><Text>TOMÁS</Text></Paragraph>
+<Paragraph Type="Dialogue"><Text>The lighthouse. Her generator part came in.</Text></Paragraph>
+<Paragraph Number="4" Type="Scene Heading"><Text>EXT. COASTAL ROAD - DAY</Text></Paragraph>
+<Paragraph Type="Action"><Text>Tomás pedals hard into the wind. Lightning splits the sky. A tree branch crashes onto the road in front of him.</Text></Paragraph>
+<Paragraph Type="Action"><Text>He brakes, skids, and goes over the handlebars into the mud.</Text></Paragraph>
+<Paragraph Number="5" Type="Scene Heading"><Text>INT. LIGHTHOUSE - KITCHEN - NIGHT</Text></Paragraph>
+<Paragraph Type="Action"><Text>A kerosene lamp. Marta stirs a pot of soup on an iron stove. Biscuit sleeps by the door. The windows rattle.</Text></Paragraph>
+<Paragraph Type="Action"><Text>A knock. Marta opens the door: Tomás, muddy, bleeding from a cut on his forehead, holding up the bag.</Text></Paragraph>
+<Paragraph Type="Character"><Text>TOMÁS</Text></Paragraph>
+<Paragraph Type="Dialogue"><Text>Generator part. Signed for it myself.</Text></Paragraph>
+<Paragraph Type="Character"><Text>MARTA</Text></Paragraph>
+<Paragraph Type="Dialogue"><Text>You fool. Sit down before you fall down.</Text></Paragraph>
+<Paragraph Number="6" Type="Scene Heading"><Text>INT. LIGHTHOUSE - GENERATOR ROOM - NIGHT</Text></Paragraph>
+<Paragraph Type="Action"><Text>Sparks fly as Marta fits the new part. Tomás holds a flashlight. The generator coughs, then ROARS to life.</Text></Paragraph>
+<Paragraph Type="Action"><Text>Above them, the great lamp begins to turn.</Text></Paragraph>
+<Paragraph Number="7" Type="Scene Heading"><Text>EXT. OPEN SEA - FISHING BOAT - NIGHT</Text></Paragraph>
+<Paragraph Type="Action"><Text>A small fishing boat, the ESTRELA, pitches in enormous waves. CAPTAIN RUI (50s) fights the wheel. Two DECKHANDS cling to the rail.</Text></Paragraph>
+<Paragraph Type="Action"><Text>Through the rain, a beam of light sweeps across the water.</Text></Paragraph>
+<Paragraph Type="Character"><Text>CAPTAIN RUI</Text></Paragraph>
+<Paragraph Type="Dialogue"><Text>The light! Bring her about, hard to port!</Text></Paragraph>
+<Paragraph Number="8" Type="Scene Heading"><Text>EXT. CLIFFTOP LIGHTHOUSE - DAWN</Text></Paragraph>
+<Paragraph Type="Action"><Text>Calm. Marta and Tomás sit on the bench outside, wrapped in blankets, drinking coffee. Biscuit chases seagulls.</Text></Paragraph>
+<Paragraph Type="Action"><Text>Far below, the Estrela chugs safely into the harbour.</Text></Paragraph>
+<Paragraph Type="Character"><Text>MARTA</Text></Paragraph>
+<Paragraph Type="Dialogue"><Text>You know, I could use an assistant.</Text></Paragraph>
+<Paragraph Type="Character"><Text>TOMÁS</Text></Paragraph>
+<Paragraph Type="Parenthetical"><Text>(grinning)</Text></Paragraph>
+<Paragraph Type="Dialogue"><Text>Does it pay?</Text></Paragraph>
+<Paragraph Type="Character"><Text>MARTA</Text></Paragraph>
+<Paragraph Type="Dialogue"><Text>In soup.</Text></Paragraph>
+</Content>
+</FinalDraft>
