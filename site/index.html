@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FilmOrganizer — Script breakdown and shooting schedule</title>
+    <meta
+      name="description"
+      content="Free, open-source app that turns a screenplay or brief into a scene-by-scene breakdown, a calendar and a stripboard. Runs on your computer, works offline."
+    />
+    <meta property="og:title" content="FilmOrganizer — Script breakdown and shooting schedule" />
+    <meta
+      property="og:description"
+      content="Break down the script. Schedule the shoot. Free, open source, offline — for Windows, macOS and Linux."
+    />
+    <meta property="og:image" content="img/breakdown.png" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; base-uri 'self'; form-action 'none'" />
+    <link rel="icon" type="image/png" href="img/favicon.png" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="nav">
+      <div class="wrap nav-inner">
+        <a class="brand" href="#top" aria-label="FilmOrganizer home">
+          <img src="img/icon.png" alt="" width="32" height="32" />
+          <span>FilmOrganizer</span>
+        </a>
+        <nav class="nav-links" aria-label="Main">
+          <a href="#features">Features</a>
+          <a href="#download">Download</a>
+          <a href="https://github.com/nachobust/FilmOrganizer-public">GitHub</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <div class="wrap">
+          <p class="eyebrow">Free · Open source · Works offline</p>
+          <h1>Break down the script.<br />Schedule the shoot.</h1>
+          <p class="lede">
+            FilmOrganizer turns a screenplay or a creative brief into a scene-by-scene breakdown, a shooting calendar and a
+            stripboard. It runs on your computer, so your script stays with you.
+          </p>
+          <div class="cta">
+            <a class="button primary" id="download-main" href="https://github.com/nachobust/FilmOrganizer-public/releases/latest">
+              Download FilmOrganizer
+            </a>
+            <a class="button" href="https://github.com/nachobust/FilmOrganizer-public">View the source</a>
+          </div>
+          <p class="platforms">Windows · macOS (Apple silicon and Intel) · Linux</p>
+          <figure class="window hero-shot">
+            <div class="window-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+            <img
+              src="img/breakdown.png"
+              width="1440"
+              height="880"
+              alt="The breakdown table: each scene is a row, coloured by Int/Ext and Day/Night, with cast and other elements as chips, and the scene's script on the right."
+            />
+          </figure>
+        </div>
+      </section>
+
+      <div class="strips" aria-hidden="true">
+        <span class="s1"></span><span class="s2"></span><span class="s3"></span><span class="s4"></span><span class="s5"></span>
+      </div>
+
+      <section id="features" class="section">
+        <div class="wrap">
+          <h2>Everything from page one to call time</h2>
+          <p class="section-lede">
+            Built around how assistant directors and producers already work: breakdown sheets, eighths of a page, story
+            days and a stripboard.
+          </p>
+          <div class="grid">
+            <article class="card">
+              <h3>Import any script</h3>
+              <p>
+                PDF, Word, Final Draft, Fountain or plain text. Scene headings, page counts in eighths and speaking
+                characters come straight from the file.
+              </p>
+            </article>
+            <article class="card">
+              <h3>Breakdown in seconds, offline</h3>
+              <p>
+                Built-in rules find cast, props, wardrobe, vehicles, animals, effects and production risks in English and
+                Spanish scripts — no internet, no AI, same result every time.
+              </p>
+            </article>
+            <article class="card">
+              <h3>AI only if you want it</h3>
+              <p>
+                Plug in Claude, ChatGPT, Gemini or a free local model to catch what is implied but never written. Every
+                suggestion waits for you to accept or reject it.
+              </p>
+            </article>
+            <article class="card">
+              <h3>Briefs become scenes</h3>
+              <p>
+                A commercial brief or treatment without scene headings? The AI proposes the scenes to shoot — locations,
+                Int/Ext, Day/Night, characters and key shots.
+              </p>
+            </article>
+            <article class="card">
+              <h3>Calendar and stripboard</h3>
+              <p>
+                Drag strips into shooting days, coloured by Int/Ext and Day/Night, with page and scene totals for every
+                day.
+              </p>
+            </article>
+            <article class="card">
+              <h3>PDF and Excel exports</h3>
+              <p>
+                The breakdown, calendar and stripboard as a PDF to share, or as an Excel workbook with a tab for each.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section alt">
+        <div class="wrap showcase">
+          <div class="showcase-text">
+            <h2>Plan the week on a stripboard</h2>
+            <p>
+              Every scene is a strip. Drag it into a day, reorder the day, and see how many pages and scenes you are
+              asking of the crew before anyone is called.
+            </p>
+          </div>
+          <figure class="window">
+            <div class="window-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+            <img
+              src="img/stripboard.png"
+              width="1440"
+              height="880"
+              alt="A week stripboard with coloured scene strips placed on four shooting days, with page and scene totals per day."
+            />
+          </figure>
+        </div>
+        <div class="wrap showcase reverse">
+          <div class="showcase-text">
+            <h2>See the whole shoot at a glance</h2>
+            <p>The calendar numbers your shooting days and shows what is planned for each. Click any day to open its week.</p>
+          </div>
+          <figure class="window">
+            <div class="window-bar" aria-hidden="true"><span></span><span></span><span></span></div>
+            <img
+              src="img/calendar.png"
+              width="1440"
+              height="880"
+              alt="A month calendar with four numbered shooting days and the scenes planned on each."
+            />
+          </figure>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="wrap">
+          <h2>Yours to keep</h2>
+          <div class="grid three">
+            <article class="point">
+              <h3>No account, no subscription</h3>
+              <p>Download it and use it. There is nothing to sign up for and nothing to renew.</p>
+            </article>
+            <article class="point">
+              <h3>Your script stays on your computer</h3>
+              <p>
+                Projects are saved locally. A script only leaves your machine if you choose to send it to an AI provider
+                of your own.
+              </p>
+            </article>
+            <article class="point">
+              <h3>Open source</h3>
+              <p>
+                The code is public under the MIT licence: read it, change it, build on it — including for your production
+                company.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="download" class="section alt">
+        <div class="wrap">
+          <h2>Download</h2>
+          <p class="section-lede">
+            Pick the installer for your computer from the
+            <a href="https://github.com/nachobust/FilmOrganizer-public/releases/latest">latest release</a>.
+          </p>
+          <div class="grid three downloads">
+            <article class="card os" data-os="windows">
+              <h3>Windows</h3>
+              <p class="files"><code>-setup.exe</code> or <code>.msi</code></p>
+              <p class="note">
+                First launch: Windows shows “Windows protected your PC”. Click <strong>More info → Run anyway</strong>.
+              </p>
+            </article>
+            <article class="card os" data-os="mac">
+              <h3>macOS</h3>
+              <p class="files"><code>.dmg</code> — Apple silicon and Intel</p>
+              <p class="note">
+                First launch: open <strong>System Settings → Privacy &amp; Security</strong> and click
+                <strong>Open Anyway</strong>.
+              </p>
+            </article>
+            <article class="card os" data-os="linux">
+              <h3>Linux</h3>
+              <p class="files"><code>.AppImage</code> or <code>.deb</code></p>
+              <p class="note">AppImage: allow it to run as a program (Properties, or <code>chmod +x</code>), then open it.</p>
+            </article>
+          </div>
+          <p class="fine">
+            The warning appears because the app isn't signed with a paid certificate. It is shown only once.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="wrap footer-inner">
+        <span>FilmOrganizer · MIT licence · © 2026 nachobust</span>
+        <span>
+          <a href="https://github.com/nachobust/FilmOrganizer-public">Source code</a> ·
+          <a href="https://github.com/nachobust/FilmOrganizer-public/issues">Report a problem</a>
+        </span>
+      </div>
+    </footer>
+    <script src="site.js"></script>
+  </body>
+</html>

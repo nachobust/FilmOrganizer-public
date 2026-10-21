@@ -2,6 +2,8 @@
 
 A film pre-production tool: break a screenplay down scene by scene in a table, then schedule the shoot on a calendar and stripboard.
 
+**Website:** https://nachobust.github.io/FilmOrganizer-public/
+
 ## Download
 
 Get the installer for your computer from the [latest release](https://github.com/nachobust/FilmOrganizer-public/releases/latest). It's free and runs offline.
@@ -68,6 +70,10 @@ Installers for every system are built by GitHub Actions (`.github/workflows/rele
 3. When the workflow finishes, a draft release with all installers appears under **Releases**. Review it and press **Publish**.
 
 To test a build without making a release, open the **Actions** tab, choose **Release → Run workflow**; the installers are attached to the run as artifacts.
+
+### Website
+
+The website is plain HTML and CSS in `site/`, published to GitHub Pages by `.github/workflows/website.yml` whenever `site/` changes on `main` (one-time setup: Settings → Pages → Source: GitHub Actions). Preview it locally with `python -m http.server --directory site`.
 
 ## License
 
