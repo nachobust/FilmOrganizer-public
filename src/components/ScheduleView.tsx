@@ -14,6 +14,7 @@ import {
   type Sheet,
 } from '../model';
 import type { Action } from '../store';
+import { askConfirm } from '../platform';
 
 export interface ScheduleNav {
   mode: 'month' | 'week';
@@ -126,8 +127,8 @@ function SceneModal(props: {
               <button
                 type="button"
                 className="danger"
-                onClick={() => {
-                  if (confirm(`Delete scene ${d.scenes}? This also removes its breakdown.`)) {
+                onClick={async () => {
+                  if (await askConfirm(`Delete scene ${d.scenes}? This also removes its breakdown.`)) {
                     dispatch({ type: 'deleteSheet', id: d.id! });
                     onClose();
                   }
@@ -387,9 +388,10 @@ function WeekBoard(props: {
         <button
           className="danger"
           disabled={scheduled.size === 0}
-          onClick={() =>
-            confirm('Move every scheduled scene back to Unscheduled? This clears the whole schedule, not just this week.') &&
-            dispatch({ type: 'clearSchedule' })
+          onClick={async () =>
+            (await askConfirm(
+              'Move every scheduled scene back to Unscheduled? This clears the whole schedule, not just this week.',
+            )) && dispatch({ type: 'clearSchedule' })
           }
         >
           Reset board

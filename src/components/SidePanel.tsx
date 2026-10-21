@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState, type Dispatch, type ReactNode } from 'react';
 import { elementLabel, formatEighths, type BreakdownElement, type Category, type Project, type Sheet } from '../model';
 import type { Action } from '../store';
+import { askConfirm } from '../platform';
 
 const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
@@ -131,11 +132,10 @@ function ElementsView(props: { project: Project; dispatch: Dispatch<Action> }) {
               <button
                 className="ghost"
                 title="Delete element from every scene"
-                onClick={() =>
-                  (counts.get(el.id) ?? 0) === 0 || confirm(`Remove “${elementLabel(el)}” from every scene?`)
-                    ? dispatch({ type: 'deleteElement', elementId: el.id })
-                    : undefined
-                }
+                onClick={async () => {
+                  if ((counts.get(el.id) ?? 0) === 0 || (await askConfirm(`Remove “${elementLabel(el)}” from every scene?`)))
+                    dispatch({ type: 'deleteElement', elementId: el.id });
+                }}
               >
                 ✕
               </button>
@@ -193,8 +193,8 @@ export default function SidePanel(props: {
             <span className="spacer" />
             <button
               className="danger"
-              onClick={() => {
-                if (confirm(`Delete sheet ${sheet.sheetNumber || ''}?`)) {
+              onClick={async () => {
+                if (await askConfirm(`Delete sheet ${sheet.sheetNumber || ''}?`)) {
                   dispatch({ type: 'deleteSheet', id: sheet.id });
                   onSelect(null);
                 }

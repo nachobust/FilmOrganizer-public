@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Permissions for the main window: native save dialogs and writing the file the user chose.",
+  "windows": ["main"],
+  "permissions": ["core:default", "dialog:default", "fs:allow-write-file"]
+}

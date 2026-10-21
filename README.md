@@ -2,6 +2,24 @@
 
 A film pre-production tool: break a screenplay down scene by scene in a table, then schedule the shoot on a calendar and stripboard.
 
+## Download
+
+Get the installer for your computer from the [latest release](https://github.com/nachobust/FilmOrganizer-public/releases/latest). It's free and runs offline.
+
+| System | File |
+|---|---|
+| Windows | `.msi` or `-setup.exe` |
+| macOS (Apple Silicon and Intel) | `.dmg` |
+| Linux | `.AppImage` (any distribution) or `.deb` (Debian / Ubuntu) |
+
+The installers are not code-signed yet, so the first launch shows a warning:
+
+- **Windows** — "Windows protected your PC": click **More info → Run anyway**.
+- **macOS** — the app is blocked the first time: open **System Settings → Privacy & Security** and click **Open Anyway** next to FilmOrganizer.
+- **Linux (AppImage)** — make the file executable (right-click → Properties → Allow executing as program, or `chmod +x`), then open it.
+
+This is needed only once.
+
 ## Features
 
 - **Breakdown table** — every scene is a row (sheet, scene, I/E, set, day/night, pages in eighths, synopsis, script day, location, …) with one column per breakdown category (cast, background, props, wardrobe, vehicles, effects, …). Elements are added as tags; cast members get ID numbers automatically.
@@ -13,7 +31,7 @@ A film pre-production tool: break a screenplay down scene by scene in a table, t
 - **Schedule** — month calendar with month/year navigation; click any day to open that week's drag-and-drop stripboard with an Unscheduled pool and per-day page totals.
 - **Export** — PDF with the breakdown, calendar and stripboard, each starting on its own page; an Excel workbook with the same three as separate tabs (plus an Elements tab); and a JSON project file.
 
-Projects are saved automatically in the browser; use **Export → Project file** to keep a copy.
+Projects are saved automatically (in the app, or in the browser for the web version); use **Export → Project file** to keep a copy.
 
 ## Run locally
 
@@ -31,6 +49,25 @@ Then open http://localhost:5173. Use **Load sample script** to try it with the i
 ```bash
 npm run build
 ```
+
+## Desktop app
+
+The desktop app wraps the same code with [Tauri](https://tauri.app). To run or build it locally you also need [Rust](https://www.rust-lang.org/tools/install) and Tauri's [system prerequisites](https://tauri.app/start/prerequisites/).
+
+```bash
+npm run tauri dev     # run the desktop app with live reload
+npm run tauri build   # build an installer for this computer
+```
+
+### Releasing
+
+Installers for every system are built by GitHub Actions (`.github/workflows/release.yml`), free on public repositories:
+
+1. Update `version` in `package.json`.
+2. Tag and push: `git tag v0.1.0 && git push origin v0.1.0`.
+3. When the workflow finishes, a draft release with all installers appears under **Releases**. Review it and press **Publish**.
+
+To test a build without making a release, open the **Actions** tab, choose **Release → Run workflow**; the installers are attached to the run as artifacts.
 
 ## License
 

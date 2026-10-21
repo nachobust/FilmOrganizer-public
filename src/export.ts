@@ -12,6 +12,7 @@ import {
   type Project,
   type Sheet,
 } from './model';
+import { saveFile } from './platform';
 
 export const SHEET_FIELDS = [
   ['sheetNumber', 'Sheet'],
@@ -89,21 +90,12 @@ function shootingWeeks(p: Project): Date[] {
   return [...keys].sort().map(fromISO);
 }
 
-function download(fileName: string, data: BlobPart, type: string) {
-  const url = URL.createObjectURL(new Blob([data], { type }));
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = fileName;
-  a.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
-
 const baseName = (p: Project) => p.title.trim().replace(/[\\/:*?"<>|]/g, '') || 'breakdown';
 
 // ---------------------------------------------------------------- JSON
 
-export function exportJSON(p: Project) {
-  download(`${baseName(p)}.filmorganizer.json`, JSON.stringify(p, null, 2), 'application/json');
+export async function exportJSON(p: Project) {
+  await saveFile(`${baseName(p)}.filmorganizer.json`, JSON.stringify(p, null, 2), 'application/json');
 }
 
 // ---------------------------------------------------------------- Excel
@@ -283,7 +275,7 @@ export async function exportXLSX(p: Project) {
 
   for (const ws of [cal, sb]) ws.pageSetup = { orientation: 'landscape', fitToPage: true, fitToWidth: 1, fitToHeight: 0 };
   const buf = await wb.xlsx.writeBuffer();
-  download(`${baseName(p)}.xlsx`, buf, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  await saveFile(`${baseName(p)}.xlsx`, buf, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 }
 
 // ---------------------------------------------------------------- PDF
@@ -478,6 +470,6 @@ export async function exportPDF(p: Project) {
     doc.setPage(i);
     doc.setFont('helvetica', 'normal').setFontSize(8).setTextColor(130).text(`${p.title} · page ${i} of ${pages}`, M, H - 20);
   }
-  doc.save(`${baseName(p)}.pdf`);
+  await saveFile(`${baseName(p)}.pdf`, doc.output('arraybuffer'), 'application/pdf');
 }
 

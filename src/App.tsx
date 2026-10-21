@@ -15,6 +15,7 @@ import {
   type CategoryGroup,
   type Project,
 } from './model';
+import { askConfirm } from './platform';
 import { runRules } from './rules';
 import { loadSaved, reducer, saveProject, validateProject } from './store';
 
@@ -88,8 +89,8 @@ export default function App() {
   }, [project.sheets, project.schedule]);
 
   const replaceProject = useCallback(
-    (next: Project, confirmText = 'Replace the current project? Export it first if you want to keep it.') => {
-      if (project.sheets.length && !confirm(confirmText)) return false;
+    async (next: Project, confirmText = 'Replace the current project? Export it first if you want to keep it.') => {
+      if (project.sheets.length && !(await askConfirm(confirmText))) return false;
       dispatch({ type: 'load', project: next });
       setSelectedId(next.sheets[0]?.id ?? null);
       setNav(initialNav(next));
@@ -103,8 +104,7 @@ export default function App() {
 
   const openScript = async (file: File) => {
     try {
-      replaceProject(await importScriptFile(file));
-      setTab('breakdown');
+      if (await replaceProject(await importScriptFile(file))) setTab('breakdown');
     } catch (e) {
       // No scene headings: offer to read the file as a creative brief instead.
       if (e instanceof NoScenesError) setAIDialog({ kind: 'brief', title: e.title, text: e.text });
@@ -117,14 +117,17 @@ export default function App() {
     try {
       const data = JSON.parse(await file.text());
       const p = validateProject(data);
-      if (p) return replaceProject(p);
+      if (p) return void (await replaceProject(p));
       const imported = importLegacyBoard(project, data);
       if (!imported) throw new Error('This is not a FilmOrganizer project or strip board file.');
       const merged =
         project.sheets.length === 0 && project.title === 'Untitled'
           ? { ...imported, title: file.name.replace(/\.json$/i, '').replace(/[-_]+/g, ' ') }
           : imported;
-      if (stats.scheduled && !confirm('Load this strip board? It replaces the current schedule; scenes are matched by number.'))
+      if (
+        stats.scheduled &&
+        !(await askConfirm('Load this strip board? It replaces the current schedule; scenes are matched by number.'))
+      )
         return;
       dispatch({ type: 'load', project: merged });
       setNav({ ...initialNav(merged), mode: 'week' });
@@ -138,7 +141,7 @@ export default function App() {
   const loadSample = async () => {
     try {
       const res = await fetch(encodeURI(SAMPLE));
-      replaceProject(importScript(SAMPLE.split('/').pop()!, await res.text()));
+      await replaceProject(importScript(SAMPLE.split('/').pop()!, await res.text()));
     } catch (e) {
       fail(e);
     }
@@ -296,7 +299,11 @@ export default function App() {
           </details>
           <button onClick={() => dispatch({ type: 'addSheet', afterId: selectedId ?? undefined })}>+ Add scene</button>
           {stats.pending > 0 && (
-            <button onClick={() => confirm(`Accept all ${stats.pending} suggestions in every scene?`) && dispatch({ type: 'acceptAll' })}>
+            <button
+              onClick={async () =>
+                (await askConfirm(`Accept all ${stats.pending} suggestions in every scene?`)) && dispatch({ type: 'acceptAll' })
+              }
+            >
               Accept all suggestions
             </button>
           )}
@@ -398,8 +405,8 @@ export default function App() {
           title={aiDialog.title}
           text={aiDialog.text}
           settings={aiSettings}
-          onDone={(scenes, by) => {
-            if (!replaceProject(projectFromBrief(aiDialog.title, scenes, by))) return;
+          onDone={async (scenes, by) => {
+            if (!(await replaceProject(projectFromBrief(aiDialog.title, scenes, by)))) return;
             setAIDialog(null);
             setTab('breakdown');
             setNotice(

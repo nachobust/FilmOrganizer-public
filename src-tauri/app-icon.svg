@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <rect x="64" y="64" width="896" height="896" rx="200" fill="#1f2937"/>
+  <!-- Clapper sticks -->
+  <g transform="translate(184 214) rotate(-9)">
+    <rect width="656" height="120" rx="22" fill="#f4f4f5"/>
+    <path d="M110 0h90l-80 120h-90zM290 0h90l-80 120h-90zM470 0h90l-80 120h-90z" fill="#1f2937"/>
+  </g>
+  <!-- Board -->
+  <rect x="184" y="360" width="656" height="470" rx="40" fill="#f4f4f5"/>
+  <!-- Stripboard strips: Ext Day, Int Day, Int Night, Ext Night -->
+  <rect x="236" y="412" width="552" height="74" rx="16" fill="#fff3ad"/>
+  <rect x="236" y="508" width="552" height="74" rx="16" fill="#bfe3ff"/>
+  <rect x="236" y="604" width="552" height="74" rx="16" fill="#b393e6"/>
+  <rect x="236" y="700" width="552" height="74" rx="16" fill="#5b7fd6"/>
+</svg>
