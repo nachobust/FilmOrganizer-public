@@ -13,7 +13,7 @@
       property="og:description"
       content="Break down the script. Schedule the shoot. Free, open source, offline — for Windows, macOS and Linux."
     />
-    <meta property="og:image" content="img/breakdown.png" />
+    <meta property="og:image" content="img/video-poster.jpg" />
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self'; script-src 'self'; base-uri 'self'; form-action 'none'" />
     <link rel="icon" type="image/png" href="img/favicon.png" />
     <link rel="stylesheet" href="styles.css" />
@@ -43,20 +43,28 @@
             stripboard. It runs on your computer, so your script stays with you.
           </p>
           <div class="cta">
-            <a class="button primary" id="download-main" href="https://github.com/nachobust/FilmOrganizer-public/releases/latest">
-              Download FilmOrganizer
-            </a>
-            <a class="button" href="https://github.com/nachobust/FilmOrganizer-public">View the source</a>
+            <a class="button os-button" data-os="windows" href="#download">Download for Windows</a>
+            <a class="button os-button" data-os="mac" href="#download">Download for macOS</a>
+            <a class="button os-button" data-os="linux" href="#download">Download for Linux</a>
           </div>
-          <p class="platforms">Windows · macOS (Apple silicon and Intel) · Linux</p>
+          <p class="platforms">
+            Free · macOS works on Apple silicon and Intel ·
+            <a href="https://github.com/nachobust/FilmOrganizer-public">view the source</a>
+          </p>
           <figure class="window hero-shot">
             <div class="window-bar" aria-hidden="true"><span></span><span></span><span></span></div>
-            <img
-              src="img/breakdown.png"
-              width="1440"
-              height="880"
-              alt="The breakdown table: each scene is a row, coloured by Int/Ext and Day/Night, with cast and other elements as chips, and the scene's script on the right."
-            />
+            <video
+              src="video/filmorganizer-explainer.mp4"
+              poster="img/video-poster.jpg"
+              width="1920"
+              height="1080"
+              autoplay
+              muted
+              loop
+              playsinline
+              preload="metadata"
+              aria-label="A 39-second walkthrough: a script PDF is dropped into FilmOrganizer, one line of the script is broken down into cast, wardrobe, props and animals, the scene is dragged onto a shooting day, and the month calendar shows the whole shoot."
+            ></video>
           </figure>
         </div>
       </section>
