@@ -266,12 +266,22 @@ h3 {
 }
 
 /* ---------- Downloads ---------- */
-.downloads .files {
-  margin: 0 0 12px;
-  color: var(--ink);
+.downloads .card {
+  display: flex;
+  flex-direction: column;
+}
+.downloads .button {
+  align-self: flex-start;
+  margin: 4px 0 14px;
 }
 .downloads .note {
   font-size: 15px;
+}
+.downloads .alt {
+  margin-top: auto;
+  padding-top: 12px;
+  font-size: 14px;
+  color: var(--soft);
 }
 .card.os.mine {
   border: 2px solid var(--accent);
