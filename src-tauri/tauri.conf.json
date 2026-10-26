@@ -4,9 +4,9 @@
   "version": "../package.json",
   "identifier": "io.github.nachobust.filmorganizer",
   "build": {
-    "beforeDevCommand": "npm run dev",
+    "beforeDevCommand": "npm run notices && npm run dev",
     "devUrl": "http://localhost:5173",
-    "beforeBuildCommand": "npm run build",
+    "beforeBuildCommand": "npm run notices && npm run build",
     "frontendDist": "../dist"
   },
   "app": {
@@ -34,6 +34,10 @@
     "shortDescription": "Film breakdown and scheduling",
     "longDescription": "Break a screenplay or brief down scene by scene, then schedule the shoot on a calendar and stripboard. Works offline.",
     "license": "MIT",
+    "resources": {
+      "../LICENSE": "LICENSE.txt",
+      "THIRD-PARTY-NOTICES.txt": "THIRD-PARTY-NOTICES.txt"
+    },
     "icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png", "icons/icon.icns", "icons/icon.ico"]
   }
 }

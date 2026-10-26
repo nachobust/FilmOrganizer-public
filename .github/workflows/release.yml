@@ -59,6 +59,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # The installers carry THIRD-PARTY-NOTICES.txt: the licence of every bundled library.
+      # cargo-about lists the Rust crates; `npm run notices` (run by the Tauri build) adds the JavaScript ones.
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-about
+
+      - name: List Rust crate licences
+        run: cargo about generate --manifest-path src-tauri/Cargo.toml -c src-tauri/about.toml -o src-tauri/rust-licenses.txt src-tauri/about.hbs
+
       - name: Build installers
         uses: tauri-apps/tauri-action@v0
         env:

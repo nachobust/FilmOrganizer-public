@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "typecheck": "tsc -b",
     "preview": "vite preview",
+    "notices": "node scripts/third-party-notices.mjs",
     "tauri": "tauri"
   },
   "dependencies": {

@@ -78,3 +78,5 @@ The website is plain HTML and CSS in `site/`, hosted on Vercel, which redeploys 
 ## License
 
 [MIT](LICENSE) © 2026 nachobust
+
+FilmOrganizer uses open-source libraries under their own licences (MIT, Apache-2.0, ISC, BSD and similar). Every installer includes `THIRD-PARTY-NOTICES.txt` with each one's licence text; `npm run notices` regenerates it.
