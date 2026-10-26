@@ -2,7 +2,7 @@
 
 A film pre-production tool: break a screenplay down scene by scene in a table, then schedule the shoot on a calendar and stripboard.
 
-**Website:** https://nachobust.github.io/FilmOrganizer-public/
+**Website:** https://filmorganizer.vercel.app
 
 ## Download
 
@@ -73,7 +73,7 @@ To test a build without making a release, open the **Actions** tab, choose **Rel
 
 ### Website
 
-The website is plain HTML and CSS in `site/`, published to GitHub Pages by `.github/workflows/website.yml` whenever `site/` changes on `main` (one-time setup: Settings → Pages → Source: GitHub Actions). Preview it locally with `python -m http.server --directory site`.
+The website is plain HTML and CSS in `site/`, hosted on Vercel, which redeploys it on every push to `main`. Preview it locally with `python -m http.server --directory site`.
 
 ## License
 
