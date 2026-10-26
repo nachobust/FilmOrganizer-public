@@ -1,15 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
-  <rect x="64" y="64" width="896" height="896" rx="200" fill="#1f2937"/>
-  <!-- Clapper sticks -->
-  <g transform="translate(184 214) rotate(-9)">
-    <rect width="656" height="120" rx="22" fill="#f4f4f5"/>
-    <path d="M110 0h90l-80 120h-90zM290 0h90l-80 120h-90zM470 0h90l-80 120h-90z" fill="#1f2937"/>
+  <title>FilmOrganizer</title>
+  <defs>
+    <!-- Glass body: frosted white, slightly cool, fading toward the bottom -->
+    <linearGradient id="glassFill" x1="0" y1="0" x2="0.35" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.66"/>
+      <stop offset="0.45" stop-color="#e8f0fa" stop-opacity="0.36"/>
+      <stop offset="1" stop-color="#d2dff0" stop-opacity="0.3"/>
+    </linearGradient>
+    <!-- Diagonal light streaks across the glass -->
+    <linearGradient id="streak" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#ffffff" stop-opacity="0.32"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <!-- Light caught in the bottom of the glass -->
+    <linearGradient id="bottomGlow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0.4"/>
+    </linearGradient>
+    <!-- Soft inner glow along the tile edge, like thick glass -->
+    <filter id="edgeGlow" x="-5%" y="-5%" width="110%" height="110%">
+      <feGaussianBlur stdDeviation="14"/>
+    </filter>
+    <!-- Rim light: bright top-left edge, dimmer bottom-right -->
+    <linearGradient id="glassRim" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.95"/>
+      <stop offset="0.5" stop-color="#ffffff" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0.75"/>
+    </linearGradient>
+    <!-- Glossy sheen across the top half -->
+    <linearGradient id="sheen" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.75"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0.08"/>
+    </linearGradient>
+    <clipPath id="tileClip">
+      <path id="tile" d="M264 64 L760 64 C870.457 64 960 153.543 960 264 L960 760 C960 870.457 870.457 960 760 960 L264 960 C153.543 960 64 870.457 64 760 L64 264 C64 153.543 153.543 64 264 64 Z"/>
+    </clipPath>
+    <!-- Clapper: gradients run across the bar (perpendicular to its -9deg tilt) -->
+    <linearGradient id="clapFace" gradientUnits="userSpaceOnUse" x1="514" y1="170" x2="533" y2="292">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#d6dbe2"/>
+    </linearGradient>
+    <linearGradient id="clapStripe" gradientUnits="userSpaceOnUse" x1="514" y1="170" x2="533" y2="292">
+      <stop offset="0" stop-color="#3a3d44"/>
+      <stop offset="1" stop-color="#000000"/>
+    </linearGradient>
+    <linearGradient id="clapEdge" gradientUnits="userSpaceOnUse" x1="514" y1="180" x2="535" y2="306">
+      <stop offset="0" stop-color="#b8c0ca"/>
+      <stop offset="1" stop-color="#6b737d"/>
+    </linearGradient>
+    <linearGradient id="clapGloss" gradientUnits="userSpaceOnUse" x1="514" y1="170" x2="533" y2="292">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.7"/>
+      <stop offset="0.44" stop-color="#ffffff" stop-opacity="0.18"/>
+      <stop offset="0.47" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="0.85" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0.3"/>
+    </linearGradient>
+    <clipPath id="clapClip">
+      <path id="clap" d="M202.562 219.203 L807.027 123.465 C819.028 121.565 830.297 129.752 832.198 141.753 L844.087 216.817 C845.987 228.818 837.8 240.087 825.799 241.988 L221.334 337.726 C209.333 339.627 198.064 331.439 196.163 319.438 L184.274 244.374 C182.373 232.373 190.561 221.104 202.562 219.203 Z"/>
+    </clipPath>
+    <!-- Board: same treatment as the clapper, vertical since it isn't tilted -->
+    <linearGradient id="boardFace" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#dde1e7"/>
+    </linearGradient>
+    <linearGradient id="boardGloss" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.6"/>
+      <stop offset="0.36" stop-color="#ffffff" stop-opacity="0.12"/>
+      <stop offset="0.38" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="0.92" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0.25"/>
+    </linearGradient>
+    <!-- Colored bars: glossy gel, each lighter at top and richer at the bottom -->
+    <linearGradient id="bar1Fill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff7c8"/><stop offset="1" stop-color="#ffec92"/>
+    </linearGradient>
+    <linearGradient id="bar2Fill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d4edff"/><stop offset="1" stop-color="#aad9ff"/>
+    </linearGradient>
+    <linearGradient id="bar3Fill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c2a6ee"/><stop offset="1" stop-color="#a584e2"/>
+    </linearGradient>
+    <linearGradient id="bar4Fill" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#6f90e0"/><stop offset="1" stop-color="#4e72d0"/>
+    </linearGradient>
+    <!-- Shine pill on the top half of each bar -->
+    <linearGradient id="barShine" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0.05"/>
+    </linearGradient>
+    <!-- Light bouncing back up at the bottom of each bar -->
+    <linearGradient id="barBounce" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0.18"/>
+    </linearGradient>
+    <clipPath id="boardClip">
+      <path id="board" d="M224 360 L800 360 C822.091 360 840 377.909 840 400 L840 790 C840 812.091 822.091 830 800 830 L224 830 C201.909 830 184 812.091 184 790 L184 400 C184 377.909 201.909 360 224 360 Z"/>
+    </clipPath>
+    <filter id="tileShadow" x="-10%" y="-10%" width="120%" height="125%">
+      <feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#000000" flood-opacity="0.22"/>
+    </filter>
+    <filter id="partShadow" x="-10%" y="-10%" width="125%" height="130%">
+      <feDropShadow dx="6" dy="8" stdDeviation="6" flood-color="#000000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- Glass tile -->
+  <use href="#tile" fill="url(#glassFill)" filter="url(#tileShadow)"/>
+  <g clip-path="url(#tileClip)">
+    <use href="#tile" fill="none" stroke="#ffffff" stroke-opacity="0.7" stroke-width="44" filter="url(#edgeGlow)"/>
+    <path d="M64 64 L960 64 L960 330 C760 420 360 300 64 470 Z" fill="url(#sheen)"/>
+    <rect x="-200" y="470" width="90" height="1400" fill="url(#streak)" transform="rotate(38 512 512)"/>
+    <rect x="-80" y="470" width="36" height="1400" fill="url(#streak)" transform="rotate(38 512 512)"/>
+    <rect x="64" y="820" width="896" height="140" fill="url(#bottomGlow)"/>
   </g>
+  <use href="#tile" fill="none" stroke="url(#glassRim)" stroke-width="10"/>
+  <use href="#tile" fill="none" stroke="#000000" stroke-opacity="0.55" stroke-width="3"/>
+
+  <!-- Clapper -->
+  <g filter="url(#partShadow)">
+    <!-- Thickness: the bar's underside, offset below the face -->
+    <use href="#clap" transform="translate(0 7)" fill="url(#clapEdge)" stroke="#000000" stroke-width="4"/>
+    <use href="#clap" fill="url(#clapFace)"/>
+    <g clip-path="url(#clapClip)">
+      <path d="M289.478 205.437 L378.37 191.358 L318.127 322.395 L229.235 336.474 Z M467.262 177.279 L556.154 163.2 L495.911 294.237 L407.019 308.316 Z M645.046 149.121 L733.938 135.042 L673.695 266.079 L584.803 280.158 Z" fill="url(#clapStripe)" stroke="#000000" stroke-width="4" stroke-miterlimit="10"/>
+      <!-- Glass gloss: bright upper half with a crisp horizon, faint bottom reflection -->
+      <use href="#clap" fill="url(#clapGloss)"/>
+    </g>
+    <!-- Inner rim highlight and outline -->
+    <use href="#clap" transform="translate(514 230) scale(0.985 0.93) translate(-514 -230)" fill="none" stroke="#ffffff" stroke-opacity="0.7" stroke-width="2.5"/>
+    <use href="#clap" fill="none" stroke="#000000" stroke-width="4" stroke-miterlimit="10"/>
+  </g>
+
   <!-- Board -->
-  <rect x="184" y="360" width="656" height="470" rx="40" fill="#f4f4f5"/>
-  <!-- Stripboard strips: Ext Day, Int Day, Int Night, Ext Night -->
-  <rect x="236" y="412" width="552" height="74" rx="16" fill="#fff3ad"/>
-  <rect x="236" y="508" width="552" height="74" rx="16" fill="#bfe3ff"/>
-  <rect x="236" y="604" width="552" height="74" rx="16" fill="#b393e6"/>
-  <rect x="236" y="700" width="552" height="74" rx="16" fill="#5b7fd6"/>
+  <g filter="url(#partShadow)">
+    <use href="#board" transform="translate(0 7)" fill="url(#clapEdge)" stroke="#000000" stroke-width="4"/>
+    <use href="#board" fill="url(#boardFace)"/>
+  </g>
+  <!-- Board glass gloss sits under the bars so their outlines stay crisp -->
+  <use href="#board" fill="url(#boardGloss)"/>
+  <g stroke="#000000" stroke-width="2" stroke-miterlimit="10">
+    <path id="bar1" d="M252 412 L772 412 C780.837 412 788 419.163 788 428 L788 470 C788 478.837 780.837 486 772 486 L252 486 C243.163 486 236 478.837 236 470 L236 428 C236 419.163 243.163 412 252 412 Z" fill="url(#bar1Fill)"/>
+    <path id="bar2" d="M252 508 L772 508 C780.837 508 788 515.163 788 524 L788 566 C788 574.837 780.837 582 772 582 L252 582 C243.163 582 236 574.837 236 566 L236 524 C236 515.163 243.163 508 252 508 Z" fill="url(#bar2Fill)"/>
+    <path id="bar3" d="M252 604 L772 604 C780.837 604 788 611.163 788 620 L788 662 C788 670.837 780.837 678 772 678 L252 678 C243.163 678 236 670.837 236 662 L236 620 C236 611.163 243.163 604 252 604 Z" fill="url(#bar3Fill)"/>
+    <path id="bar4" d="M252 700 L772 700 C780.837 700 788 707.163 788 716 L788 758 C788 766.837 780.837 774 772 774 L252 774 C243.163 774 236 766.837 236 758 L236 716 C236 707.163 243.163 700 252 700 Z" fill="url(#bar4Fill)"/>
+  </g>
+  <g fill="url(#barShine)">
+    <rect x="246" y="417" width="532" height="24" rx="11"/>
+    <rect x="246" y="513" width="532" height="24" rx="11"/>
+    <rect x="246" y="609" width="532" height="24" rx="11"/>
+    <rect x="246" y="705" width="532" height="24" rx="11"/>
+  </g>
+  <g fill="url(#barBounce)">
+    <rect x="260" y="464" width="504" height="18" rx="9"/>
+    <rect x="260" y="560" width="504" height="18" rx="9"/>
+    <rect x="260" y="656" width="504" height="18" rx="9"/>
+    <rect x="260" y="752" width="504" height="18" rx="9"/>
+  </g>
+  <!-- Board inner rim highlight and outline -->
+  <use href="#board" transform="translate(512 595) scale(0.99 0.988) translate(-512 -595)" fill="none" stroke="#ffffff" stroke-opacity="0.7" stroke-width="2.5"/>
+  <use href="#board" fill="none" stroke="#000000" stroke-width="4" stroke-miterlimit="10"/>
 </svg>
