@@ -18,8 +18,13 @@ permissions:
   contents: write
 
 jobs:
+  # Same checks as CI: no installers are built if types or tests fail.
+  check:
+    uses: ./.github/workflows/ci.yml
+
   build:
     name: Build (${{ matrix.name }})
+    needs: check
     strategy:
       fail-fast: false
       matrix:
@@ -100,3 +105,21 @@ jobs:
             src-tauri/target/**/release/bundle/**/*.AppImage
             src-tauri/target/**/release/bundle/**/*.deb
           if-no-files-found: warn
+
+  # SHA256SUMS.txt lets people check that a downloaded installer is exactly the one built here.
+  checksums:
+    name: Publish checksums
+    needs: build
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add SHA256SUMS.txt to the release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          mkdir assets && cd assets
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY"
+          sha256sum * > ../SHA256SUMS.txt
+          cat ../SHA256SUMS.txt
+          gh release upload "$TAG" ../SHA256SUMS.txt --repo "$GITHUB_REPOSITORY" --clobber
