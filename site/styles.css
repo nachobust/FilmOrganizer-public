@@ -311,6 +311,10 @@ code {
   justify-content: space-between;
   gap: 10px;
 }
+.footer-note {
+  flex-basis: 100%;
+  font-size: 13px;
+}
 
 /* ---------- Small screens ---------- */
 @media (max-width: 860px) {
