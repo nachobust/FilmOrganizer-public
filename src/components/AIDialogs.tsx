@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import {
   aiUnavailable,
-  BRIEF_MAX_CHARS,
   breakdownBrief,
+  briefMaxChars,
   estimateBrief,
   estimateRun,
   listModels,
@@ -116,6 +116,16 @@ export function AISettingsModal(props: { settings: AISettings; onSave: (s: AISet
                 />
               </label>
             )}
+            {(info.needsKey || provider === 'custom') && (
+              <label className="check">
+                <input
+                  type="checkbox"
+                  checked={cfg.rememberKey !== false}
+                  onChange={(e) => set({ rememberKey: e.target.checked })}
+                />
+                Remember this key on this computer
+              </label>
+            )}
             <div className="field-row end">
               <label>
                 Model
@@ -139,7 +149,11 @@ export function AISettingsModal(props: { settings: AISettings; onSave: (s: AISet
             <p className="modal-text small">
               {info.local
                 ? 'Everything stays on this computer.'
-                : `Your key is saved only in this browser and sent only to ${info.label}. Scene text is sent to ${info.label} when you run an AI breakdown.`}
+                : `${
+                    cfg.rememberKey !== false
+                      ? 'Your key is stored on this computer without encryption, so anyone who can use your computer account could read it.'
+                      : 'Your key is kept only until you close FilmOrganizer and is never written to disk.'
+                  } It is sent only to ${info.label}. Scene text is sent to ${info.label} when you run an AI breakdown.`}
             </p>
           </>
         )}
@@ -177,7 +191,7 @@ export function AIRunModal(props: {
   const problem = aiUnavailable(settings);
   const cfg = settings.provider ? providerSettings(settings, settings.provider) : null;
   const info = settings.provider ? PROVIDERS[settings.provider] : null;
-  const [estimate] = useState(() => estimateRun(project, sheetIds));
+  const [estimate] = useState(() => estimateRun(project, sheetIds, settings.provider));
   useEffect(() => () => abort.current?.abort(), []);
 
   const start = async () => {
@@ -313,7 +327,8 @@ export function BriefModal(props: {
   const abort = useRef<AbortController | null>(null);
   useEffect(() => () => abort.current?.abort(), []);
   const problem = aiUnavailable(settings);
-  const tooLong = text.length > BRIEF_MAX_CHARS;
+  const maxChars = briefMaxChars(settings);
+  const tooLong = text.length > maxChars;
   const cfg = settings.provider ? providerSettings(settings, settings.provider) : null;
   const words = text.split(/\s+/).filter(Boolean).length;
 
@@ -380,7 +395,10 @@ export function BriefModal(props: {
             {tooLong && (
               <p className="form-error">
                 This text is too long for one request ({Math.round(text.length / 1000)}k characters, limit{' '}
-                {BRIEF_MAX_CHARS / 1000}k). Split it into parts.
+                {maxChars / 1000}k). Split it into parts
+                {settings.provider && PROVIDERS[settings.provider].local
+                  ? ', or use a cloud provider: models on this computer read much less text at a time.'
+                  : '.'}
               </p>
             )}
             {state.phase === 'failed' && <p className="form-error">{state.message}</p>}

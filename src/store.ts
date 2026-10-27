@@ -196,11 +196,16 @@ export function loadSaved(): Project | null {
   }
 }
 
-export function saveProject(p: Project) {
+/**
+ * Saves the project for next time. Returns false when storage is full or unavailable: the
+ * previous save is left as it was, and the caller must tell the user to export the project.
+ */
+export function saveProject(p: Project): boolean {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(p));
+    return true;
   } catch {
-    // Storage full or unavailable: the project stays in memory; Save Project still works.
+    return false;
   }
 }
 

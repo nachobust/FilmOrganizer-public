@@ -49,6 +49,7 @@ export default function App() {
   const [error, setError] = useState('');
   const [busy, setBusy] = useState('');
   const [notice, setNotice] = useState('');
+  const [saveFailed, setSaveFailed] = useState(false);
   const [aiSettings, setAISettings] = useState<AISettings>(loadAISettings);
   const [aiDialog, setAIDialog] = useState<AIDialog>(null);
   const scriptInput = useRef<HTMLInputElement>(null);
@@ -57,7 +58,7 @@ export default function App() {
   const suggestMenu = useRef<HTMLDetailsElement>(null);
 
   useEffect(() => {
-    const t = setTimeout(() => saveProject(project), 300);
+    const t = setTimeout(() => setSaveFailed(!saveProject(project)), 300);
     return () => clearTimeout(t);
   }, [project]);
 
@@ -319,6 +320,16 @@ export default function App() {
         </div>
       )}
 
+      {saveFailed && (
+        <div className="error" role="alert">
+          Your latest changes are not saved: there is no room left to store this project on this computer. Export the
+          project file now to keep them.{' '}
+          <button className="primary" onClick={() => runExport('project', exportJSON)}>
+            Export project file
+          </button>
+        </div>
+      )}
+
       {notice && (
         <div className="notice" role="status">
           {notice}{' '}
@@ -387,7 +398,11 @@ export default function App() {
         <button className="link" onClick={() => setAIDialog({ kind: 'settings' })} title="AI settings">
           AI: {aiLabel}
         </button>
-        <span className="muted">Saved in this browser automatically</span>
+        {saveFailed ? (
+          <span className="warn">Not saved: export the project file</span>
+        ) : (
+          <span className="muted">Saved in this browser automatically</span>
+        )}
       </footer>
 
       {aiDialog?.kind === 'settings' && (

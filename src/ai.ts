@@ -84,6 +84,8 @@ export interface ProviderSettings {
   apiKey: string;
   model: string;
   baseUrl: string;
+  /** false = the key is kept only while the app is open, never written to storage. */
+  rememberKey?: boolean;
 }
 
 export interface AISettings {
@@ -94,7 +96,11 @@ export interface AISettings {
 
 const STORAGE_KEY = 'filmorganizer.ai';
 
-/** Keys live only in this browser, apart from the project, so they never end up in an exported file. */
+/**
+ * Keys live only in this browser, apart from the project, so they never end up in an exported file.
+ * They are stored unencrypted (encrypting them here would not help: the key to decrypt would sit in
+ * the same app), so the settings warn about it and offer not to remember a key at all.
+ */
 export function loadAISettings(): AISettings {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
@@ -105,9 +111,17 @@ export function loadAISettings(): AISettings {
   return { provider: null, providers: {} };
 }
 
+/** What is written to storage: keys the user chose not to remember are left out. */
+export function storedAISettings(s: AISettings): AISettings {
+  const providers = Object.fromEntries(
+    Object.entries(s.providers).map(([id, cfg]) => [id, cfg && cfg.rememberKey === false ? { ...cfg, apiKey: '' } : cfg]),
+  );
+  return { ...s, providers };
+}
+
 export function saveAISettings(s: AISettings) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(s));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(storedAISettings(s)));
   } catch {
     // Storage blocked: the settings last until the page is closed.
   }
@@ -120,8 +134,67 @@ export function providerSettings(s: AISettings, id: ProviderId): ProviderSetting
     apiKey: saved?.apiKey ?? '',
     model: saved?.model || info.defaultModel,
     baseUrl: saved?.baseUrl || info.baseUrl,
+    rememberKey: saved?.rememberKey !== false,
   };
 }
+
+// ---------------------------------------------------------------- Limits
+
+/** Longest wait for one answer. A model on this computer can be slow, so it gets longer. */
+const timeoutMs = (id: ProviderId) => (PROVIDERS[id].local ? 10 : 5) * 60_000;
+
+/**
+ * How much text goes in one request. Local models are often run with a small context window
+ * (Ollama's default is a few thousand tokens) and silently drop what doesn't fit, so they get
+ * small batches. About 4 characters per token.
+ */
+const batchLimits = (id: ProviderId | null) =>
+  id && PROVIDERS[id].local ? { chars: 6000, scenes: 4 } : { chars: 24000, scenes: 12 };
+
+/** Briefs are sent in one request; this keeps it inside the provider's limits. */
+export const BRIEF_MAX_CHARS = 120000;
+const BRIEF_MAX_CHARS_LOCAL = 12000;
+
+export const briefMaxChars = (s: AISettings) =>
+  s.provider && PROVIDERS[s.provider].local ? BRIEF_MAX_CHARS_LOCAL : BRIEF_MAX_CHARS;
+
+/**
+ * The user's stop signal plus a time limit. `timedOut()` tells the two apart, so a hung
+ * server gets a clear message instead of waiting forever.
+ */
+function withTimeout(signal: AbortSignal | undefined, ms: number) {
+  const ctrl = new AbortController();
+  let timedOut = false;
+  const stop = () => ctrl.abort();
+  if (signal?.aborted) ctrl.abort();
+  else signal?.addEventListener('abort', stop, { once: true });
+  const timer = setTimeout(() => {
+    timedOut = true;
+    ctrl.abort();
+  }, ms);
+  return {
+    signal: ctrl.signal,
+    timedOut: () => timedOut,
+    done: () => {
+      clearTimeout(timer);
+      signal?.removeEventListener('abort', stop);
+    },
+  };
+}
+
+const minutes = (ms: number) => `${Math.round(ms / 60_000)} minute${ms === 60_000 ? '' : 's'}`;
+
+function timeoutError(id: ProviderId, ms: number) {
+  const info = PROVIDERS[id];
+  return new Error(
+    `No answer from ${info.label} after ${minutes(ms)}.` +
+      (info.local
+        ? ' The model may be too slow on this computer for this much text: try a smaller model or fewer scenes at a time.'
+        : ' The service may be busy: try again, or with fewer scenes at a time.'),
+  );
+}
+
+const CUT_OFF = 'The answer was cut off. Try a shorter text or fewer scenes at a time.';
 
 /** Why the AI can't run right now, or null when it can. */
 export function aiUnavailable(s: AISettings): string | null {
@@ -143,7 +216,12 @@ async function anthropicClient(cfg: ProviderSettings) {
   // The key is the user's own, typed into their own browser, so calling the API directly is intended here.
   return {
     Anthropic,
-    client: new Anthropic({ apiKey: cfg.apiKey.trim(), dangerouslyAllowBrowser: true, maxRetries: 2 }),
+    client: new Anthropic({
+      apiKey: cfg.apiKey.trim(),
+      dangerouslyAllowBrowser: true,
+      maxRetries: 2,
+      timeout: timeoutMs('anthropic'),
+    }),
   };
 }
 
@@ -166,34 +244,51 @@ function assertSafeUrl(baseUrl: string, sendsKey: boolean) {
     );
 }
 
-async function openaiFetch(cfg: ProviderSettings, path: string, init: RequestInit = {}) {
+async function openaiFetch(
+  id: ProviderId,
+  cfg: ProviderSettings,
+  path: string,
+  init: RequestInit = {},
+  ms = timeoutMs(id),
+) {
   assertSafeUrl(cfg.baseUrl, !!cfg.apiKey.trim());
   const headers: Record<string, string> = { 'Content-Type': 'application/json' };
   if (cfg.apiKey.trim()) headers.Authorization = `Bearer ${cfg.apiKey.trim()}`;
-  let res: Response;
+  const limit = withTimeout(init.signal ?? undefined, ms);
   try {
-    res = await fetch(`${trimSlash(cfg.baseUrl)}${path}`, { ...init, headers });
-  } catch (e) {
-    if ((e as Error).name === 'AbortError') throw e;
-    throw new Error(
-      `Couldn't reach ${cfg.baseUrl}. Check the URL and your connection. For Ollama, allow this page with OLLAMA_ORIGINS; for LM Studio, enable CORS in its server settings.`,
-    );
-  }
-  if (!res.ok) {
-    let detail = '';
+    let res: Response;
     try {
-      const body = await res.json();
-      detail = body?.error?.message ?? body?.message ?? JSON.stringify(body);
-    } catch {
-      detail = res.statusText;
+      res = await fetch(`${trimSlash(cfg.baseUrl)}${path}`, { ...init, headers, signal: limit.signal });
+    } catch (e) {
+      if (limit.timedOut()) throw timeoutError(id, ms);
+      if ((e as Error).name === 'AbortError') throw e;
+      throw new Error(
+        `Couldn't reach ${cfg.baseUrl}. Check the URL and your connection. For Ollama, allow this page with OLLAMA_ORIGINS; for LM Studio, enable CORS in its server settings.`,
+      );
     }
-    const err = new Error(
-      `${res.status === 401 ? 'The API key was rejected' : `Request failed (${res.status})`}: ${detail}`,
-    );
-    (err as Error & { status?: number }).status = res.status;
-    throw err;
+    if (!res.ok) {
+      let detail = '';
+      try {
+        const body = await res.json();
+        detail = body?.error?.message ?? body?.message ?? JSON.stringify(body);
+      } catch {
+        detail = res.statusText;
+      }
+      const err = new Error(
+        `${res.status === 401 ? 'The API key was rejected' : `Request failed (${res.status})`}: ${detail}`,
+      );
+      (err as Error & { status?: number }).status = res.status;
+      throw err;
+    }
+    try {
+      return await res.json();
+    } catch (e) {
+      if (limit.timedOut()) throw timeoutError(id, ms);
+      throw e;
+    }
+  } finally {
+    limit.done();
   }
-  return res.json();
 }
 
 /** Lists the models the provider offers to this key, for the settings dropdown and as a connection test. */
@@ -211,7 +306,8 @@ export async function listModels(id: ProviderId, cfg: ProviderSettings): Promise
       throw e;
     }
   }
-  const body = await openaiFetch(cfg, '/models');
+  // Listing models is quick; a server that doesn't answer in 20 seconds isn't running.
+  const body = await openaiFetch(id, cfg, '/models', {}, 20_000);
   const list: { id?: string; name?: string }[] = body?.data ?? body?.models ?? [];
   return list
     .map((m) => (m.id ?? m.name ?? '').replace(/^models\//, ''))
@@ -276,15 +372,13 @@ function sceneText(s: Sheet, key: string, p: Project): string {
     .join('\n');
 }
 
-const BATCH_CHARS = 24000;
-const BATCH_SCENES = 12;
-
 interface Batch {
   keys: Map<string, string>;
   text: string;
 }
 
-function makeBatches(p: Project, sheetIds: string[]): Batch[] {
+function makeBatches(p: Project, sheetIds: string[], provider: ProviderId | null): Batch[] {
+  const limit = batchLimits(provider);
   const batches: Batch[] = [];
   let cur: Batch = { keys: new Map(), text: '' };
   p.sheets
@@ -292,7 +386,7 @@ function makeBatches(p: Project, sheetIds: string[]): Batch[] {
     .forEach((s, i) => {
       const key = `s${i + 1}`;
       const text = sceneText(s, key, p);
-      if (cur.keys.size && (cur.keys.size >= BATCH_SCENES || cur.text.length + text.length > BATCH_CHARS)) {
+      if (cur.keys.size && (cur.keys.size >= limit.scenes || cur.text.length + text.length > limit.chars)) {
         batches.push(cur);
         cur = { keys: new Map(), text: '' };
       }
@@ -304,8 +398,8 @@ function makeBatches(p: Project, sheetIds: string[]): Batch[] {
 }
 
 /** Rough size of a run, shown before the user starts it (about 4 characters per token). */
-export function estimateRun(p: Project, sheetIds: string[]) {
-  const batches = makeBatches(p, sheetIds);
+export function estimateRun(p: Project, sheetIds: string[], provider: ProviderId | null) {
+  const batches = makeBatches(p, sheetIds, provider);
   const chars = batches.reduce((n, b) => n + b.text.length + systemPrompt(p).length, 0);
   return { requests: batches.length, inputTokens: Math.round(chars / 4) };
 }
@@ -379,8 +473,7 @@ async function askAnthropic(cfg: ProviderSettings, ask: Ask, signal: AbortSignal
       res = await client.beta.messages.create({ ...base, ...fallback }, { signal });
     }
     if (res.stop_reason === 'refusal') throw new Error(`Claude declined to ${ask.task}.`);
-    if (res.stop_reason === 'max_tokens')
-      throw new Error('The answer was cut off. Try a shorter text or fewer scenes at a time.');
+    if (res.stop_reason === 'max_tokens') throw new Error(CUT_OFF);
     return res.content.map((b) => (b.type === 'text' ? b.text : '')).join('');
   } catch (e) {
     if (e instanceof Anthropic.AuthenticationError) throw new Error('The API key was rejected by Anthropic.');
@@ -389,12 +482,13 @@ async function askAnthropic(cfg: ProviderSettings, ask: Ask, signal: AbortSignal
       throw new Error(`Model “${model}” wasn't found. Pick another in AI settings.`);
     if (e instanceof Anthropic.RateLimitError)
       throw new Error('Anthropic rate limit reached. Wait a minute and try again.');
+    if (e instanceof Anthropic.APIConnectionTimeoutError) throw timeoutError('anthropic', timeoutMs('anthropic'));
     if (e instanceof Anthropic.APIConnectionError) throw new Error("Couldn't reach Anthropic. Check your connection.");
     throw e;
   }
 }
 
-async function askOpenAI(cfg: ProviderSettings, ask: Ask, signal: AbortSignal): Promise<string> {
+async function askOpenAI(id: ProviderId, cfg: ProviderSettings, ask: Ask, signal: AbortSignal): Promise<string> {
   const body = {
     model: cfg.model.trim(),
     messages: [
@@ -403,7 +497,7 @@ async function askOpenAI(cfg: ProviderSettings, ask: Ask, signal: AbortSignal): 
     ],
   };
   const call = (extra: object) =>
-    openaiFetch(cfg, '/chat/completions', { method: 'POST', body: JSON.stringify({ ...body, ...extra }), signal });
+    openaiFetch(id, cfg, '/chat/completions', { method: 'POST', body: JSON.stringify({ ...body, ...extra }), signal });
   let res;
   try {
     res = await call({ response_format: { type: 'json_object' } });
@@ -412,11 +506,14 @@ async function askOpenAI(cfg: ProviderSettings, ask: Ask, signal: AbortSignal): 
     if ((e as { status?: number }).status !== 400) throw e;
     res = await call({});
   }
-  return res?.choices?.[0]?.message?.content ?? '';
+  const choice = res?.choices?.[0];
+  // A cut-off answer is half a JSON document: say so instead of reporting a malformed breakdown.
+  if (choice?.finish_reason === 'length') throw new Error(CUT_OFF);
+  return choice?.message?.content ?? '';
 }
 
 const ask = (id: ProviderId, cfg: ProviderSettings, a: Ask, signal: AbortSignal) =>
-  PROVIDERS[id].kind === 'anthropic' ? askAnthropic(cfg, a, signal) : askOpenAI(cfg, a, signal);
+  PROVIDERS[id].kind === 'anthropic' ? askAnthropic(cfg, a, signal) : askOpenAI(id, cfg, a, signal);
 
 /** Pulls the JSON object out of a reply, tolerating code fences or text around it. */
 function parseReply<T>(text: string): T {
@@ -453,7 +550,7 @@ export async function runAIBreakdown(
   const cfg = providerSettings(s, id);
   const by = `AI · ${PROVIDERS[id].label.replace(/ \(.*\)$/, '')} ${cfg.model}`;
   const cats = new Set(p.categories.map((c) => c.id));
-  const batches = makeBatches(p, sheetIds);
+  const batches = makeBatches(p, sheetIds, id);
   for (let i = 0; i < batches.length; i++) {
     if (signal.aborted) return;
     const b = batches[i];
@@ -501,9 +598,6 @@ export interface BriefScene {
   seconds: number;
   risks: string[];
 }
-
-/** Briefs are sent in one request; this keeps it well inside every provider's limits. */
-export const BRIEF_MAX_CHARS = 120000;
 
 // Follows the breakdown step of the user's filmmaker skill: locations, scenes per location,
 // talent per scene, key shots, and technically complex or light-dependent shots.
@@ -599,7 +693,7 @@ export async function breakdownBrief(
 ): Promise<{ scenes: BriefScene[]; by: string }> {
   const problem = aiUnavailable(s);
   if (problem) throw new Error(problem);
-  if (text.length > BRIEF_MAX_CHARS)
+  if (text.length > briefMaxChars(s))
     throw new Error(
       `This text is too long to send in one request (${Math.round(text.length / 1000)}k characters). Split it into parts.`,
     );

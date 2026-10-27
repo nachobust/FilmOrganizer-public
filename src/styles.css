@@ -897,6 +897,15 @@ select {
   color: var(--muted);
   flex: 1;
 }
+.modal label.check {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  flex: none;
+}
+.modal label.check input {
+  width: auto;
+}
 .modal input,
 .modal select {
   padding: 7px 9px;
