@@ -8,7 +8,7 @@
 
 ## Download
 
-Get the installer for your computer from the [latest release](https://github.com/nachobust/FilmOrganizer-public/releases/latest). It's free and runs offline.
+Get the installer for your computer from the [latest release](https://github.com/nachobust/FilmOrganizer/releases/latest). It's free and runs offline.
 
 | System | File |
 |---|---|

@@ -20,7 +20,7 @@
     deb: /\.deb$/,
   };
   if (!window.fetch) return;
-  fetch('https://api.github.com/repos/nachobust/FilmOrganizer-public/releases/latest')
+  fetch('https://api.github.com/repos/nachobust/FilmOrganizer/releases/latest')
     .then(function (response) {
       return response.ok ? response.json() : null;
     })
