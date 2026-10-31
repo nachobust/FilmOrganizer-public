@@ -1,8 +1,10 @@
 # FilmOrganizer
 
-A film pre-production tool: break a screenplay down scene by scene in a table, then schedule the shoot on a calendar and stripboard.
+**FilmOrganizer** is a free, open-source script breakdown and shooting schedule app for film, TV, commercials and branded content. Import a screenplay (PDF, Word, Final Draft or Fountain), get a scene-by-scene breakdown of cast, props, wardrobe, vehicles and locations, then plan the shoot on a stripboard and a calendar. It runs offline on Windows, macOS and Linux, with no account.
 
 **Website:** https://filmorganizer.vercel.app
+
+![FilmOrganizer stripboard: scenes as coloured strips dragged onto shooting days](site/img/stripboard.png)
 
 ## Download
 
